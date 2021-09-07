@@ -20,19 +20,23 @@ MB = 1024 * 1024
 TEST_BASE_URL = 'https://sandbox.zamzar.com'
 PROD_BASE_URL = 'https://api.zamzar.com'
 
+# Global vars
 source_path = input('Provide source path for files to convert: ') if len(sys.argv) < 2 else sys.argv[1]
 output_dir = '{}/conversion_output'.format(os.getcwd() if os.path.isfile(source_path) else source_path)
 target_format = input('Target format for files: ') if len(sys.argv) < 3 else sys.argv[2]
 
+# Ensure dir for output exists
 if not os.path.exists(output_dir):
     os.mkdir(output_dir)
 
+# Set of preexisting files to limit erroneous jobs
 preexisting_files = {
     '{}/{}'.format(output_dir, file.split('.')[0]) \
         for dir, _, files in os.walk(output_dir) \
             for file in files
 }
 
+# DFS walk along dirs to convert files
 def walk_dir(source_path):
     if os.path.isfile(source_path):
         create_job_and_download_file(source_path)
@@ -47,13 +51,13 @@ def walk_dir(source_path):
             full_path = '{}/{}'.format(dir, file)
             walk_dir(full_path)
             
-            
+
+# Convert file    
 def create_job_and_download_file(source_path, retry_count=1):
     if os.path.getsize(source_path) > MB:
         return
     
-    base_url = TEST_BASE_URL
-    print(source_path)
+    base_url = PROD_BASE_URL # if os.path.getsize(source_path) > MB else TEST_BASE_URL
     file_extension = source_path.split('.')[-1]
     if not approved_file_extensions(base_url, file_extension):
         print('No endpoint for {} extension: {}'.format(file_extension, source_path))
@@ -83,5 +87,6 @@ def create_job_and_download_file(source_path, retry_count=1):
     
     delete_file(base_url, target_file['id'])
     
+
 walk_dir(source_path)
     

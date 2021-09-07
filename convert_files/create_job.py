@@ -10,7 +10,7 @@ def create_job(base_url, source_file, target_format):
         res = requests.post(endpoint, data=data_content,
                             files=file_content, auth=HTTPBasicAuth(os.environ.get('API_KEY'), '')).json()
         
-        print('Created job for: {}'.format(res))
+        print('Job {} for {} created'.format(res['id'], res['name']))
         return res
     
     except requests.ConnectionError:
