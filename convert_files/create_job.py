@@ -8,11 +8,12 @@ def create_job(base_url, source_file, target_format):
         file_content = {'source_file': open(source_file, 'rb')}
         data_content = {'target_format': target_format}
         res = requests.post(endpoint, data=data_content,
-                            files=file_content, auth=HTTPBasicAuth(os.environ.get('API_KEY'), ''))
+                            files=file_content, auth=HTTPBasicAuth(os.environ.get('API_KEY'), '')).json()
         
-        print('Created job')
-        print(res.json())
-        return res.json()
+        print('Created job for: {}'.format(res))
+        return res
+    
     except requests.ConnectionError:
-        print('Issue requesting server to create job')
+        print('Issue requesting server to create job for {}'.format(source_file))
+        return False
         

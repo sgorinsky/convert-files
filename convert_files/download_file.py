@@ -14,7 +14,8 @@ def download_file(base_url, target_file, output_dir):
                     f.write(chunk)
                     f.flush()
 
-            print('File downloaded')
+        return output_path
 
     except (IOError, requests.ConnectionError) as error:
         print(error)
+        return False
