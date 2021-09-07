@@ -1,1 +1,6 @@
 *.png
+*tmp*
+.env
+
+__pycache__
+*conversion_output*
